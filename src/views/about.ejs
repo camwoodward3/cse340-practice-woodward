@@ -1,0 +1,11 @@
+<%- include('partials/header') %>
+<main>
+    <%- content %>
+    <form action="/submit" method="POST">
+        <input type="text" name="name" placeholder="Name"><br>
+        <input type="email" name="email" placeholder="Email"><br>
+        <textarea name="message" placeholder="Message"></textarea><br>
+        <input type="submit" value="Submit">
+    </form>
+</main>
+<%- include('partials/footer') %>
