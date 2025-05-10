@@ -7,6 +7,10 @@ const app = express();
 //Create __dirname and __filename variables
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Declare important (semi-global) variables
+const NODE_ENV = process.env.NODE_ENV || 'production';
+const PORT = process.env.PORT || 3000;
 /**
  * Configures the Express Server
 */
@@ -54,7 +58,6 @@ app.use((req, res, next) => {
     
     next();
 })
-    
     // Sample product data
     const products = [
         {
@@ -102,35 +105,38 @@ app.use((req, res, next) => {
  * Routes
  */
 app.get('/', (req, res) => {
-    const title = 'Home Page';
-    const content = '<h1>Welcome to the Home Page</h1><p>This is the main content of the home page.</p>';
-    res.render('index', { title, content, NODE_ENV, PORT });
+    res.render('index', {
+        title: "Home Page",
+        content : "<h1>Welcome to the Home Page</h1><p>This is the content of the home page.</p>",
+        NODE_ENV, PORT
+    })
 });
 
 app.get('/about', (req, res) => {
-    const title = 'About Page';
-    const content = '<h1>Welcome to the About Page</h1><p>This is the main content of the about page.</p>';
-    res.render('about', {title, content});
+        res.render('index', { 
+            title : "Page 1", 
+            content : "<h1>Welcome to Page 1</h1><p>This is the content of page 1.</p>",
+            NODE_ENV, PORT
+});
+
 });
 
 app.get('/contact', (req, res) => {
-    const title = 'Contact Page';
+ title = 'Contact Page';
     const content = '<h1>Welcome to the Contact Page</h1><p>This is the main content of the contact page.</p>';
     res.render('contact', {title, content});
 });
 
 //Basic route with parameters
-app.get('/explore/:category/:id', (req, res) => {
+    app.get('/explore/:category/:id', (req, res) => {
         const { category, id } = req.params;
-        console.log('Route Parameters:', req.params);
+        const { sort = 'default', filter = 'none' } = req.query;
+        console.log(`Category: ${category}, ID: ${id}, Sort: ${sort}, Filter: ${filter}`);
+
         const title = `Exploring ${category}`;
-        res.render('explore', { title, category, id });
-        res.send(`
-        <h1>Exploring ${category}</h1>
-        <p>You selected item #${id} in the ${category} category.</p>
-        <p><a href="/explore/books/42">Try exploring books</a></p>
-        <p><a href="/explore/movies/7">Try exploring movies</a></p>
-    `);
+    
+        res.render('explore', { title, category, id, sort, filter, NODE_ENV, PORT });
+
 });
 
 // Products page route with display mode validation
@@ -138,7 +144,7 @@ app.get('/products/:display', validateDisplayMode, (req, res) => {
     const title = "Our Products";
     const { display } = req.params;
     
-    res.render('products', { title, products, display });
+    res.render('products', { title, products, display, NODE_ENV, PORT });
 });
  
 // Default products route (redirects to grid view)
@@ -146,9 +152,6 @@ app.get('/products', (req, res) => {
     res.redirect('/products/grid');
 });
 
-// Declare important (semi-global) variables
-const NODE_ENV = process.env.NODE_ENV || 'production';
-const PORT = process.env.PORT || 3000;
 
 /**
  * Error Handling Middleware
@@ -178,8 +181,9 @@ app.use((err, req, res, next) => {
         title: status === 404 ? 'Page Not Found' : 'Internal Server Error',
         error: err.message,
         stack: err.stack,
-        mode,
-        port
+        code: err.status,
+        NODE_ENV,
+        PORT
     };
     
     // Render the appropriate template based on status code
