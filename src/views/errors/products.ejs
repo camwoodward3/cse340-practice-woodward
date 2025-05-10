@@ -1,0 +1,24 @@
+<%- include('partials/header') %>
+<main>
+    <h1><%- title %></h1>
+    <div class="products-container <%= display === 'grid' ? 'grid-view' : 'details-view' %>">
+        <% products.forEach(product => { %>
+            <div class="product-card">
+                <img src="<%= product.image %>" alt="<%= product.name %>" class="product-image">
+            </div>
+        <% }); %>
+    </div>
+
+    <div class="view-toggle">
+        <a href="/products/grid" class="<%= display === 'grid' ? 'active' : '' %>">Grid View</a> | <a href="/products/details" class="<%= display ==='details' ? 'active' : '' %>">Details View</a>
+    </div>
+    <p class="timestamp">Last updated: <%= timestamp %></p>
+    <style>
+        .timestamp {
+            font-size: 0.8rem;
+            color: #999;
+            text-align: center;
+            margin-top: 2rem;
+        }
+    </style>
+</main>
