@@ -29,6 +29,10 @@ app.set('views', path.join(__dirname, 'src/views'));
 app.use((req, res, next) => {
     // Get the current year for copyright notice
     res.locals.currentYear = new Date().getFullYear();
+
+    // Add NODE_ENV for all views
+    res.locals.NODE_ENV = process.env.NODE_ENV || 'development';
+
     next();
 });
 
@@ -36,10 +40,10 @@ app.use((req, res, next) => {
  * Middleware Functions
  */
 
-// app.use((req, res, next) => {
-//     console.log(`Method: ${req.method}, URL: ${req.url}`);
-//     next(); // Pass control to the next middleware or route
-// });
+app.use((req, res, next) => {
+    console.log(`Method: ${req.method}, URL: ${req.url}`);
+    next(); // Pass control to the next middleware or route
+});
 
 // Global middleware to set a custom header
 app.use((req, res, next) => {
@@ -58,33 +62,15 @@ app.use((req, res, next) => {
     
     next();
 })
-    // Sample product data
-    const products = [
-        {
-            id: 1,
-            name: "Kindle E-Reader",
-            description: "Lightweight e-reader with a glare-free display and weeks of battery life.",
-            price: 149.99,
-            image: "https://picsum.photos/id/367/800/600"
-        },
-        {
-            id: 2,
-            name: "Vintage Film Camera",
-            description: "Capture timeless moments with this classic vintage film camera, perfect for photography enthusiasts.",
-            price: 199.99,
-            image: "https://picsum.photos/id/250/800/600"
-        }
-    ];
 
     // Middleware to validate display parameter
     const validateDisplayMode = (req, res, next) => {
         const { display } = req.params;
         if (display !== 'grid' && display !== 'details') {
-            const error = new Error('Invalid display mode: must be either "grid" or "details".');
-            next(error); // Pass control to the error-handling middleware
+            return res.status(400).send('Invalid display mode: must be either "grid" or "details".');   
         }
         next();
-    };
+    }
 
     app.use((req, res, next) => {
         const now = new Date();
@@ -105,26 +91,19 @@ app.use((req, res, next) => {
  * Routes
  */
 app.get('/', (req, res) => {
-    res.render('index', {
-        title: "Home Page",
-        content : "<h1>Welcome to the Home Page</h1><p>This is the content of the home page.</p>",
-        NODE_ENV, PORT
-    })
+    const title = "Home"
+    res.render('home', { title });
 });
 
 app.get('/about', (req, res) => {
-        res.render('index', { 
-            title : "Page 1", 
-            content : "<h1>Welcome to Page 1</h1><p>This is the content of page 1.</p>",
-            NODE_ENV, PORT
-});
+        const title = "About";
+        res.render('about', { title });
 
 });
 
 app.get('/contact', (req, res) => {
- title = 'Contact Page';
-    const content = '<h1>Welcome to the Contact Page</h1><p>This is the main content of the contact page.</p>';
-    res.render('contact', {title, content});
+    const title = "Contact";
+    res.render('contact', {title});
 });
 
 //Basic route with parameters
@@ -135,7 +114,7 @@ app.get('/contact', (req, res) => {
 
         const title = `Exploring ${category}`;
     
-        res.render('explore', { title, category, id, sort, filter, NODE_ENV, PORT });
+        res.render('explore', { title, category, id, sort, filter });
 
 });
 
@@ -143,8 +122,26 @@ app.get('/contact', (req, res) => {
 app.get('/products/:display', validateDisplayMode, (req, res) => {
     const title = "Our Products";
     const { display } = req.params;
-    
-    res.render('products', { title, products, display, NODE_ENV, PORT });
+
+    // Sample product data
+    const products = [
+        {
+            id: 1,
+            name: "Kindle E-Reader",
+            description: "Lightweight e-reader with a glare-free display and weeks of battery life.",
+            price: 149.99,
+            image: "https://picsum.photos/id/367/800/600"
+        },
+        {
+            id: 2,
+            name: "Vintage Film Camera",
+            description: "Capture timeless moments with this class vintage film camera, perfect for photography enthusiasts.",
+            price: 199.99,
+            image: "https://picsum.photos/id/250/800/600"
+        }
+    ];
+
+    res.render('products', {title, products, display });
 });
  
 // Default products route (redirects to grid view)
