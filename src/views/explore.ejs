@@ -1,30 +1,29 @@
 <%- include('partials/header') %>
 <main>
-    <h1>Explore <%= category %></h1>
-    <div class="explore-details">
-        <p>You selected item #<%= id %> in the <%= category %> category.</p>
-        
-        <% if (sort !== 'default' || filter !== 'none') { %>
-            <div class="query-params">
-                <p><strong>Applied settings:</strong></p>
-                <ul>
-                    <% if (sort !== 'default') { %>
-                        <li>Sorting by: <%= sort %></li>
-                    <% } %>
-                    <% if (filter !== 'none') { %>
-                        <li>Filterting by: <%= filter %></li>
-                    <% } %>
-                </ul>
-            </div>
-        <% } %>
+    <h1><%= categoryName %></h1>
+
+    <div class="category-description">
+        <p><%= categoryDescription %></p>
     </div>
-    
+
+    <div class="items-container">
+        <h2>Available Items</h2>
+        <div class="item-grid">
+            <% Object.entries(items).forEach(([itemId, item]) => { %>
+                <div class="item-card">
+                    <h3><%= item.name %></h3>
+                    <p class="price">$<%= item.price.toFixed(2) %></p>
+                </div>
+            <% }); %>
+        </div>
+    </div>
+
     <div class="navigation">
-        <p>Try these other categories:</p>
+        <p>Explore other categories:</p>
         <ul>
-            <li><a href="/explore/books/42">Books (Item #42)</a></li>
-            <li><a href="/explore/movies/7">Movies (Item #7)</a></li>
-            <li><a href="explore/games/15">Games (Item #15)</a></li>
+            <li><a href="/explore/mens">Men's Clothing</a></li>
+            <li><a href="/explore/womens">Women's Clothing</a></li>
+            <li><a href="/explore/accessories">Accessories</a></li>
         </ul>
     </div>
 </main>

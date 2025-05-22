@@ -10,7 +10,7 @@
         per row and more information displayed.
     -->
     <div class="products-container <%= display === 'grid' ? 'grid-view' : 'details-view' %>">
-        <% products.forEach(product => { %>
+        <% Object.entries(items).forEach(([itemId, product]) => { %>
             <div class="product-card">
                 <img src="<%= product.image %>" alt="<%= product.name %>" class="product-image">
                 <div class="product-info">
@@ -23,8 +23,8 @@
     </div>
  
     <div class="view-toggle">
-        <a href="/products/grid" class="<%= display === 'grid' ? 'active' : '' %>">Grid View</a> | 
-        <a href="/products/details" class="<%= display === 'details' ? 'active' : '' %>">Details View</a>
+        <a href="?display=grid" class="<%= display === 'grid' ? 'active' : '' %>">Grid View</a> | 
+        <a href="?display=details" class="<%= display === 'details' ? 'active' : '' %>">Details View</a>
     </div>
 </main>
 <%- include('partials/footer') %>

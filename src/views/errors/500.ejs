@@ -2,9 +2,8 @@
 <main>
     <h1>Internal Server Error</h1>
     <p>Something went wrong on your server. Our team has been notified and is working to fix the issue.</p>
-    <p>Error details (for developement only):</p>
-    <pre><%= error %></pre>
-    <p>Stack trace:</p>
-    <pre><%= stack %></pre>
+<pre>Error Message: <%- error %>
+
+<% if (NODE_ENV === 'development') { %> <%- stack %> <% } %></</pre>
 </main>
 <%- include('../partials/footer') %>
